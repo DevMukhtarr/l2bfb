@@ -45,6 +45,7 @@ app.post('/register', async (req, res) => {
         })
         res.status(201).send({ message: 'User registered successfully', user, jwt_token });
     } catch (error) {
+        console.log(error)
         res.status(400).send({ message: 'Error registering user', error });
     }
 });
