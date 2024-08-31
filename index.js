@@ -48,13 +48,14 @@ app.post('/signin', async (req, res) => {
     try {
         const { email, password } = req.body;
         const user = await User.findOne({ email });
-        const jwt_token = jwt.sign({
-            user_id: user._id,
-            email: email
-        }, process.env.JWT_TOKEN_KEY, {
-            expiresIn: "123d",
-        })
-        if (user) {
+        
+        if (user && (await bcrypt.compare(password, user.password))) {
+            const jwt_token = jwt.sign({
+                user_id: user._id,
+                email: email
+            }, process.env.JWT_TOKEN_KEY, {
+                expiresIn: "123d",
+            })
             res.status(200).send({ message: 'Signin successful', user, jwt_token });
         } else {
             res.status(401).send({ message: 'Invalid email or password' });
