@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const bcrypt = require("bcryptjs");
 require("dotenv").config()
 
 // Import Models
@@ -26,9 +27,16 @@ app.get("/", (req, res) =>{
 app.post('/register', async (req, res) => {
     try {
         const { firstname, lastname, email, role, password } = req.body;
-        const user = new User({ firstname, lastname, email, role, password });
+        const encryptedPassword = bcrypt.hash(password, 12)
+        const user = new User({ firstname, lastname, email, role, encryptedPassword });
         await user.save();
-        res.status(201).send({ message: 'User registered successfully', user });
+        const jwt_token = jwt.sign({
+            user_id: user._id,
+            email: email
+        }, process.env.JWT_TOKEN_KEY, {
+            expiresIn: "123d",
+        })
+        res.status(201).send({ message: 'User registered successfully', user, jwt_token });
     } catch (error) {
         res.status(400).send({ message: 'Error registering user', error });
     }
@@ -38,9 +46,15 @@ app.post('/register', async (req, res) => {
 app.post('/signin', async (req, res) => {
     try {
         const { email, password } = req.body;
-        const user = await User.findOne({ email, password });
+        const user = await User.findOne({ email });
+        const jwt_token = jwt.sign({
+            user_id: user._id,
+            email: email
+        }, process.env.JWT_TOKEN_KEY, {
+            expiresIn: "123d",
+        })
         if (user) {
-            res.status(200).send({ message: 'Signin successful', user });
+            res.status(200).send({ message: 'Signin successful', user, jwt_token });
         } else {
             res.status(401).send({ message: 'Invalid email or password' });
         }
