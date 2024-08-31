@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const bcrypt = require("bcryptjs");
-const { verifyToken }  = require('./middlewares/auth.js');
+const verifyToken  = require('./middlewares/auth.js');
 require("dotenv").config()
 
 // Import Models
