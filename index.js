@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const bcrypt = require("bcryptjs");
 const verifyToken  = require('./middlewares/auth.js');
+const jwt = require("jsonwebtoken")
 require("dotenv").config()
 
 // Import Models
