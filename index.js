@@ -32,7 +32,7 @@ app.post('/register', async (req, res) => {
         if (existingUser) {
             return res.status(409).send({ message: 'User with this email already exists' });
         }
-        
+
         const encryptedPassword = await bcrypt.hash(password, 12)
         const user = new User({ 
             firstname,
@@ -50,8 +50,9 @@ app.post('/register', async (req, res) => {
         })
         res.status(201).send({ message: 'User registered successfully', user, jwt_token });
     } catch (error) {
-        console.log(error)
-        res.status(400).send({ message: 'Error registering user', error });
+        console.log(error.message)
+        res.status(400).send({ message: 'Error registering user', 
+            error: error.message });
     }
 });
 
