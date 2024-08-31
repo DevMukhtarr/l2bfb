@@ -29,7 +29,12 @@ app.post('/register', async (req, res) => {
     try {
         const { firstname, lastname, email, role, password } = req.body;
         const encryptedPassword = bcrypt.hash(password, 12)
-        const user = new User({ firstname, lastname, email, role, encryptedPassword });
+        const user = new User({ 
+            firstname,
+            lastname, 
+            email, 
+            role, 
+            password: encryptedPassword });
         await user.save();
         const jwt_token = jwt.sign({
             user_id: user._id,
