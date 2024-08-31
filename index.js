@@ -86,7 +86,7 @@ app.get('/view_scholarship/:id', async (req, res) => {
 });
 
 // Start the server
-const port = 3000;
+const port = process.env.PORT;
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });
