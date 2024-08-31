@@ -2,11 +2,12 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const bcrypt = require("bcryptjs");
+const { verifyToken }  = require('./middlewares/auth.js');
 require("dotenv").config()
 
 // Import Models
-const User = require('./models/user');
-const Scholarship = require('./models/scholarship');
+const User = require('./models/user.js');
+const Scholarship = require('./models/scholarship.js');
 
 const app = express();
 app.use(bodyParser.json());
@@ -64,7 +65,7 @@ app.post('/signin', async (req, res) => {
 });
 
 // Post scholarship endpoint
-app.post('/post_scholarship', async (req, res) => {
+app.post('/post_scholarship', verifyToken,async (req, res) => {
     try {
         const { scholarship_name, scholarship_details } = req.body;
         const scholarship = new Scholarship({ scholarship_name, scholarship_details });
@@ -76,7 +77,7 @@ app.post('/post_scholarship', async (req, res) => {
 });
 
 // View all scholarships endpoint
-app.get('/view_scholarships', async (req, res) => {
+app.get('/view_scholarships', verifyToken,async (req, res) => {
     try {
         const scholarships = await Scholarship.find();
         res.status(200).send({ scholarships });
@@ -86,7 +87,7 @@ app.get('/view_scholarships', async (req, res) => {
 });
 
 // View specific scholarship by id
-app.get('/view_scholarship/:id', async (req, res) => {
+app.get('/view_scholarship/:id', verifyToken,async (req, res) => {
     try {
         const scholarship = await Scholarship.findById(req.params.id);
         if (scholarship) {
